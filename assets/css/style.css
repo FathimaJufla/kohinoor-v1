@@ -432,6 +432,7 @@ a:focus-visible {
 
 /* Hover state — luxurious multi-layered diffused aura */
 .enquire-btn:hover {
+  animation: none; /* Otherwise breatheGlow overrides the hover box-shadow */
   transform: translateY(-3px) scale(1.02);
   background-position: 100% 0;
   border-color: rgba(255, 255, 255, 0.35);
