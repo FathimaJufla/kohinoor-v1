@@ -1,0 +1,709 @@
+/* ═══════════════════════════════════════
+   KOHINOOR CATERER — LUXURY HOLDING PAGE
+   Architecture: 100vw x 100vh Full Bleed
+   ═══════════════════════════════════════ */
+
+:root {
+  --purple: #1C0B38;
+  --purple-deep: #120524;
+  --gold: #C9A84C;
+  --gold-light: #E2C96D;
+  --white: #FFFFFF;
+  --sans: 'Jost', sans-serif;
+  --serif: 'Cormorant Garamond', serif;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  background-color: var(--purple);
+}
+
+body {
+  font-family: var(--sans);
+  background-color: var(--purple);
+  color: var(--white);
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+body::-webkit-scrollbar { display: none; }
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 100vw;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* SVG Noise Grain Overlay — The Awwwards Detail */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: overlay;
+}
+
+/* Screen-reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Cinematic Video Background */
+.ambient-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0; /* Fades in via GSAP */
+}
+
+/* Deep Purple Cinematic Overlay */
+.video-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(18, 5, 36, 0.95) 0%,
+    rgba(28, 11, 56, 0.88) 40%,
+    rgba(28, 11, 56, 0.90) 70%,
+    rgba(18, 5, 36, 0.97) 100%
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Custom Magnetic Cursor */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+
+@media (pointer: coarse), (hover: none) {
+  .cursor { display: none; }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  outline: none;
+}
+
+a:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+.gold-dot {
+  color: var(--gold);
+}
+
+/* ═══════════════════════════════════════
+   LAYOUT ARCHITECTURE
+   ═══════════════════════════════════════ */
+
+.viewport-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  flex: 1 0 auto; /* Grows past the viewport on short screens so nothing is cut off */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 24px 8px;
+  opacity: 0; /* Content will fade in, but background will be visible */
+  will-change: transform, opacity;
+}
+
+.zone {
+  text-align: center;
+}
+
+/* ── ZONE 1: Logo Mark ── */
+.zone-1 {
+  margin-bottom: 14px;
+}
+.logo-mark {
+  opacity: 0; /* GSAP */
+  filter: brightness(0) invert(1);
+  width: clamp(180px, 22vw, 300px);
+  max-width: 90vw;
+  will-change: transform, opacity;
+}
+
+/* ── ZONE 2: Welcome Heading ── */
+.zone-2 {
+  margin-bottom: 12px;
+}
+.welcome-heading {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  opacity: 0; /* GSAP */
+}
+.gold-accent {
+  color: var(--gold);
+  font-weight: 400;
+}
+
+/* ── ZONE 3: Ornamental Divider ── */
+.zone-3 {
+  margin-bottom: 14px;
+}
+
+/* ── ZONE 4: Hero Headline ── */
+.zone-4 {
+  margin-bottom: 18px;
+}
+.hero-line {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(2rem, 3.5vw, 3.2rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  text-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+/* Splitting.js for words */
+.hero-line .word { display: inline-block; }
+.hero-line .whitespace { display: inline; }
+
+.hero-line .gold-italic {
+  font-weight: 400;
+  font-style: italic;
+  color: var(--gold);
+}
+
+/* ── ZONE 5: Welcome Message ── */
+.zone-5 {
+  margin-bottom: 24px;
+  max-width: 620px;
+}
+
+.welcome-text {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  opacity: 0; /* GSAP */
+}
+
+.gold-highlight {
+  font-weight: 400;
+  color: var(--gold-light);
+  font-style: normal;
+}
+
+.welcome-sub {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+  margin-top: 14px;
+  opacity: 0; /* GSAP */
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.welcome-tagline {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  margin-top: 8px;
+  opacity: 0; /* GSAP */
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* ── ZONE 6: Liquid Glass CTA ── */
+.zone-6 {
+  margin-bottom: 32px;
+}
+.cta-surface {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 28px 40px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0; /* GSAP */
+  will-change: transform, opacity;
+}
+/* Inner light refraction */
+.cta-surface::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+}
+/* Subtle inner glow bottom-left */
+.cta-surface::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: -20px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(201,168,76,0.12), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.cta-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  z-index: 2;
+}
+.micro-label {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 0.65rem;
+  letter-spacing: 0.38em;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 8px;
+}
+.cta-link {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+.cta-link:last-child {
+  margin-bottom: 0;
+}
+.cta-phone {
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.cta-icon {
+  width: 18px;
+  height: 18px;
+  max-width: 18px;
+  max-height: 18px;
+  flex: 0 0 18px;
+  color: var(--gold);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+.cta-link:hover {
+  color: var(--gold);
+}
+.cta-link:hover .cta-icon {
+  transform: scale(1.15) rotate(5deg);
+}
+
+.cta-separator {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.15);
+  z-index: 2;
+}
+
+.cta-right {
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+/* ── Enquire Button: Premium Shimmer + Layered Glow ── */
+.enquire-btn {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+  background-size: 200% 200%;
+  color: var(--purple);
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  padding: 1.2rem 2.4rem 1.2rem 2.2rem;
+  border-radius: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 2px 8px rgba(201, 168, 76, 0.15),
+    0 4px 16px rgba(201, 168, 76, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition:
+    box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    background-position 0.6s ease,
+    border-color 0.4s ease;
+  will-change: transform, box-shadow;
+}
+
+/* Shimmer sweep layer */
+.enquire-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 70%
+  );
+  z-index: 1;
+  transition: none;
+}
+
+/* Arrow icon */
+.enquire-btn .btn-arrow {
+  display: inline-flex;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.enquire-btn .btn-arrow svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: var(--purple);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Hover state — luxurious multi-layered diffused aura */
+.enquire-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  background-position: 100% 0;
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 4px 12px rgba(201, 168, 76, 0.25),
+    0 8px 25px rgba(201, 168, 76, 0.2),
+    0 16px 48px rgba(201, 168, 76, 0.15),
+    0 24px 72px rgba(201, 168, 76, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.enquire-btn:hover::before {
+  animation: shimmerSweep 0.8s ease forwards;
+}
+.enquire-btn:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+.about-btn {
+  color: var(--gold-light);
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  padding: 1rem 2.2rem 1rem 2rem;
+  border-radius: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid rgba(201, 168, 76, 0.45);
+  background: rgba(201, 168, 76, 0.06);
+  transition:
+    box-shadow 0.4s ease,
+    transform 0.4s ease,
+    background 0.4s ease,
+    border-color 0.4s ease,
+    color 0.4s ease;
+}
+
+.about-btn .btn-arrow {
+  display: inline-flex;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.about-btn .btn-arrow svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.about-btn:hover {
+  transform: translateY(-2px);
+  color: var(--gold);
+  border-color: var(--gold);
+  background: rgba(201, 168, 76, 0.14);
+  box-shadow: 0 8px 24px rgba(201, 168, 76, 0.12);
+}
+
+.about-btn:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+.enquire-btn:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow:
+    0 2px 8px rgba(201, 168, 76, 0.2),
+    0 4px 16px rgba(201, 168, 76, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition-duration: 0.1s;
+}
+
+/* Keyframes */
+@keyframes shimmerSweep {
+  0%   { left: -100%; }
+  100% { left: 100%; }
+}
+
+@keyframes breatheGlow {
+  0%, 100% {
+    box-shadow:
+      0 2px 8px rgba(201,168,76,0.15),
+      0 4px 16px rgba(201,168,76,0.1),
+      inset 0 1px 0 rgba(255,255,255,0.25);
+  }
+  50% {
+    box-shadow:
+      0 4px 12px rgba(201,168,76,0.22),
+      0 8px 28px rgba(201,168,76,0.14),
+      0 12px 44px rgba(201,168,76,0.06),
+      inset 0 1px 0 rgba(255,255,255,0.25);
+  }
+}
+
+.enquire-btn {
+  animation: breatheGlow 3.5s ease-in-out infinite;
+}
+
+/* JS-triggered periodic shimmer */
+.enquire-btn.shimmer-active::before {
+  animation: shimmerSweep 0.8s ease forwards;
+}
+
+/* ── Floating Aura Particles behind CTA ── */
+.cta-aura {
+  position: absolute;
+  inset: -40px;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 30px;
+}
+.cta-aura span {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--gold);
+  border-radius: 50%;
+  opacity: 0;
+  animation: floatParticle 4s ease-in-out infinite;
+}
+.cta-aura span:nth-child(1) { left: 10%; top: 30%; animation-delay: 0s; }
+.cta-aura span:nth-child(2) { left: 25%; top: 70%; animation-delay: 0.8s; width: 3px; height: 3px; }
+.cta-aura span:nth-child(3) { left: 50%; top: 20%; animation-delay: 1.6s; }
+.cta-aura span:nth-child(4) { left: 75%; top: 60%; animation-delay: 2.4s; width: 3px; height: 3px; }
+.cta-aura span:nth-child(5) { left: 90%; top: 40%; animation-delay: 3.2s; width: 2px; height: 2px; }
+.cta-aura span:nth-child(6) { left: 40%; top: 80%; animation-delay: 1.2s; width: 2px; height: 2px; }
+
+@keyframes floatParticle {
+  0%   { opacity: 0; transform: translateY(0) scale(0.5); }
+  25%  { opacity: 0.6; }
+  50%  { opacity: 0.3; transform: translateY(-20px) scale(1); }
+  75%  { opacity: 0.5; }
+  100% { opacity: 0; transform: translateY(-40px) scale(0.5); }
+}
+
+/* ── ZONE 6: Contact Strip ── */
+.contact-strip {
+  font-family: var(--sans);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0; /* GSAP */
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.contact-strip a {
+  transition: color 0.2s ease;
+}
+.contact-strip a:hover {
+  color: var(--gold);
+}
+
+/* ── ZONE 7: Legal ── */
+.legal {
+  flex-shrink: 0;
+  padding: 16px 24px;
+  text-align: center;
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
+  opacity: 0; /* GSAP */
+  z-index: 10;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE SCALING
+   ═══════════════════════════════════════ */
+
+@media (max-width: 1023px) {
+  .logo-mark { width: 200px; }
+  .zone-6 { margin-bottom: 24px; }
+
+  .cta-surface {
+    flex-direction: column;
+    padding: 32px;
+    gap: 24px;
+    text-align: center;
+  }
+  .cta-left {
+    align-items: center;
+    text-align: center;
+  }
+  .cta-separator {
+    width: 60px;
+    height: 1px;
+  }
+}
+
+@media (max-width: 767px) {
+  .cta-surface { width: 90vw; max-width: 400px; }
+
+  .contact-strip {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .desktop-only { display: none; }
+
+  .zone-1 { margin-bottom: 10px; }
+  .zone-2 { margin-bottom: 8px; }
+  .zone-3 { margin-bottom: 10px; }
+  .zone-4 { margin-bottom: 12px; }
+  .zone-5 { margin-bottom: 16px; }
+  .zone-6 { margin-bottom: 18px; }
+
+  .legal {
+    padding: 12px 16px;
+    white-space: normal;
+    font-size: 0.6rem;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 599px) {
+  .logo-mark { width: 150px; }
+  .viewport-container { padding-inline: 20px; }
+  .zone-1 { margin-bottom: 8px; }
+  .zone-2 { margin-bottom: 6px; }
+  .zone-3 { margin-bottom: 8px; }
+  .zone-4 { margin-bottom: 10px; }
+  .zone-5 { margin-bottom: 12px; }
+  .zone-6 { margin-bottom: 12px; }
+
+  .welcome-heading { font-size: 0.7rem; letter-spacing: 0.15em; }
+
+  .hero-line { font-size: clamp(1.5rem, 5.5vw, 2rem); }
+
+  .welcome-text { font-size: 0.88rem; line-height: 1.6; }
+  .welcome-sub { font-size: 0.7rem; margin-top: 10px; }
+
+  .cta-surface { padding: 24px 20px; gap: 16px; }
+  .enquire-btn { padding: 1rem 1.8rem; font-size: 0.7rem; }
+  .about-btn { padding: 0.85rem 1.6rem; font-size: 0.65rem; }
+}
+
+@media (max-width: 374px) {
+  .hero-line { font-size: 1.4rem; }
+  .welcome-text { font-size: 0.82rem; }
+  .welcome-sub { font-size: 0.6rem; letter-spacing: 0.04em; }
+  .logo-mark { width: 130px; }
+  .cta-phone { font-size: 1rem; }
+  .cta-email { font-size: 0.75rem; }
+  .micro-label { font-size: 0.55rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Nest Hub: reserve separate space for the contact strip and legal footer. */
+@media (width: 1024px) and (max-height: 600px) {
+  .logo-mark { width: 170px; }
+  .zone-1, .zone-2, .zone-3 { margin-bottom: 8px; }
+  .zone-4 { margin-bottom: 12px; }
+  .zone-5, .zone-6 { margin-bottom: 16px; }
+  .legal { padding-block: 12px; }
+}
