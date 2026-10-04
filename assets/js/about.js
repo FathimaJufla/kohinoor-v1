@@ -96,6 +96,33 @@ const init = () => {
     });
   }
 
+  // 5. Team cards tilt toward the pointer, with a spotlight that follows it
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (canHover && !reduceMotion) {
+    document.querySelectorAll('.team-card-inner').forEach(card => {
+      let frame = 0;
+      card.addEventListener('pointermove', (event) => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          const rect = card.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / rect.width;
+          const y = (event.clientY - rect.top) / rect.height;
+          card.classList.add('is-tilting');
+          card.style.setProperty('--ry', `${((x - 0.5) * 10).toFixed(2)}deg`);
+          card.style.setProperty('--rx', `${((0.5 - y) * 10).toFixed(2)}deg`);
+          card.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
+          card.style.setProperty('--my', `${(y * 100).toFixed(1)}%`);
+        });
+      });
+      card.addEventListener('pointerleave', () => {
+        cancelAnimationFrame(frame);
+        card.classList.remove('is-tilting');
+        card.style.setProperty('--rx', '0deg');
+        card.style.setProperty('--ry', '0deg');
+      });
+    });
+  }
+
 }; // End of init function
 
 if (document.readyState === 'loading') {
